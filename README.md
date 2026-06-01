@@ -16,4 +16,4 @@ An automated Python pipeline that parses car sales data from a JSON format, calc
 ## Setup & Execution
 1. Clone this repository:
    ```bash
-   git clone [car-sales-automation](https://github.com/your-adeniranprecious002-ux/car-sales-automation.git)
+   git clone https://github.com/your-adeniranprecious002-ux/car-sales-automation.git
