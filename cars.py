@@ -101,43 +101,65 @@ def generate_sales_pie_chart(car_data):
   # Initialize drawing container
   d =  Drawing(400, 200)
 
-  Configure Pie layout
-    = Pie()
-    .x = 20
-    .y = 20
-    .width = 160
-    .height = 160
-    .data = data
-    .labels = [str(sales) for sales in data]
-    .sideLabels = True
-    add(pc)
+  # Configure Pie layout
+  pc = Pie()
+  pc.x = 20
+  pc.y = 20
+  pc.width = 160
+  pc.height = 160
+  pc.data = data
+  pc.labels = [str(sales) for sales in data]
+  pc.sideLabels = True
+  d.add(pc)
 
-  Configure Chart Legend layout
-  gend = Legend()
-  gend.x = 240
-  gend.y = 180
-  gend.dx = 8
-  gend.dy = 8
-  gend.fontName = 'Helvita'
-  gend.fontSize = 9
-  gend.boxAnchor = 'nw'
-  gend.columnMaximum = 'right'
-  gend.colorNamePairs = [(pc.slices[i].fillColor, labels[i]) for i in range(len(data))]
-  add(legend)
+  # Configure Chart Legend layout
+  legend = Legend()
+  legend.x = 240
+  legend.y = 180
+  legend.dx = 8
+  legend.dy = 8
+  legend.fontName = 'Helvita'
+  legend.fontSize = 9
+  legend.boxAnchor = 'nw'
+  legend.columnMaximum = 'right'
+  legend.colorNamePairs = [(pc.slices[i].fillColor, labels[i]) for i in range(len(data))]
+  d.add(legend)
 
-  turn d
-
-    
+  return d
 
 def main(argv):
   """Process the JSON data and generate a full report out of it."""
   data = load_data("car_sales.json")
   summary = process_data(data)
   print(summary)
+
   # TODO: turn this into a PDF report
+  # 1. Format text strings with HTML breaks '<br/>'
+  paragraph = "<br/>".join(summary)
+
+  # Process structured matrix for table
+  table_data = cars_dict_to_table(date)
+
+  # Process pie chart asset
+  chart = generate_sales_pie_chart(data)
 
   # TODO: send the PDF report as an email attachment
+  title = "Sales summary for last month"
+  attachment = "/tmp/cars.pdf"
 
+  # Calling reporting module to write PDF out to disk destination
+  reports.generate(attachment, title, paragraph, table_data, chart)
+
+  # Email Configuration
+  sender = "automation@example.com"
+  receiver = "student@example.com"
+
+  # Format text strings with line break '\n'
+  body = "\n".join(summary)
+
+  # Generate email payload using target parameters and send the scripts
+  message = emails.generate(sender, receiver, title, body, attachment)
+  emails.send(message)
 
 if __name__ == "__main__":
   main(sys.argv)
